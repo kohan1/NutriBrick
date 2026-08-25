@@ -1,0 +1,44 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [claude/nutribrick-github-pages-7nioc7]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # enablement: turns Pages on for the repo if it is not already on, so
+      # the site does not depend on someone flipping the setting by hand.
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      # The site is a single self-contained index.html at the repo root; the
+      # source export under src/ is not part of what gets served.
+      - name: Stage site
+        run: |
+          mkdir -p _site
+          cp index.html .nojekyll _site/
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

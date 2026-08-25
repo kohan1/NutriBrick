@@ -9,8 +9,9 @@ https://kohan1.github.io/NutriBrick/
 
 ## How this is served
 
-GitHub Pages, deployed straight from the `claude/nutribrick-github-pages-7nioc7`
-branch at the repository root. There is no build step.
+GitHub Pages, via the workflow in `.github/workflows/pages.yml`. It publishes
+`index.html` on every push to `claude/nutribrick-github-pages-7nioc7`. There is
+no build step — the workflow just stages the file and uploads it.
 
 - `index.html` — the whole site. It is a self-extracting bundle: the page's
   markup, its React runtime and its webfonts all ship inside this one file as a
@@ -27,4 +28,14 @@ the rest of the page is unaffected.
 
 `index.html` is generated output, not hand-authored source — the readable markup
 lives JSON-encoded inside the `__bundler/template` script tag near the end of the
-file. Regenerate and replace the whole file rather than editing it in place.
+file. Do not edit it in place; regenerate it and replace the whole file.
+
+The source it was generated from is kept in `src/` for reference:
+
+- `NutriBrick.dc.html` — the design-canvas document
+- `NutriBrick-standalone-src.html` — the same page as readable standalone markup
+- `_ds/organic-…/` — the "Organic" design system (tokens, component CSS); see
+  its `readme.md`
+- `support.js` — canvas runtime the standalone source loads
+
+Nothing in `src/` is served; only `index.html` is published.
