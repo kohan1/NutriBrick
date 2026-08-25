@@ -23,11 +23,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # enablement: turns Pages on for the repo if it is not already on, so
-      # the site does not depend on someone flipping the setting by hand.
+      # No enablement: here — creating the Pages site needs repo-admin
+      # rights, which GITHUB_TOKEN does not have ("Resource not accessible
+      # by integration"). Pages must be switched on once, by hand, with
+      # Settings -> Pages -> Source: GitHub Actions.
       - uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
       # The site is a single self-contained index.html at the repo root; the
       # source export under src/ is not part of what gets served.
