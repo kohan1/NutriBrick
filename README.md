@@ -14,15 +14,21 @@ GitHub Pages, via the workflow in `.github/workflows/pages.yml`. It publishes
 no build step — the workflow just stages the file and uploads it.
 
 - `index.html` — the whole site. It is a self-extracting bundle: the page's
-  markup, its React runtime and its webfonts all ship inside this one file as a
-  manifest of base64 blobs, unpacked into the document on load.
+  markup, its React runtime, three.js and its webfonts all ship inside this one
+  file as a manifest of base64 blobs, unpacked into the document on load.
+- `og.png` — the 1200x630 social card referenced by the Open Graph tags.
 - `.nojekyll` — turns off Jekyll processing so nothing is rewritten on the way
   out.
 
-The only thing fetched over the network at runtime is `three.js` (used for the
-rotating 3D brick in the hero), tried against esm.sh, jsDelivr and unpkg in
-order. If all three are unreachable the hero falls back to a flat CSS brick and
-the rest of the page is unaffected.
+The page makes **no external requests at all**. `three.js` (which renders the
+rotating 3D bricks) used to load from a CDN at runtime, so on any network that
+blocked esm.sh, jsDelivr and unpkg the hero fell back to a flat CSS brick —
+directly beside the words "studs that actually interlock". It is now bundled in:
+`three.module.js` and `RoundedBoxGeometry.js` are concatenated into one ES module,
+gzipped into the manifest, and imported from a blob URL. Verified by loading the
+page with every external host blocked; all three canvases still render.
+
+`og.png` is the link-preview card, built from the page's own 3D brick render.
 
 ## Editing
 
